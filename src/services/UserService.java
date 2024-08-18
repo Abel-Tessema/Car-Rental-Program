@@ -18,7 +18,7 @@ import java.util.List;
 
 public class UserService {
 
-    // ====================== Fields ======================
+    // ==============                                                                                                                           `======== Fields ======================
     private final CarService carService = new CarService();
     private List<User> users = new ArrayList<>();
     private final String className = "User";
@@ -54,15 +54,19 @@ public class UserService {
     }
 
     // ====================== Sign Up ======================
-    public boolean signUp(String name, String phoneNumber, String email, String password) {
+    public void signUp(String name, String phoneNumber, String email, String password) {
         User user = new User();
+        database.incrementSize(className);
         user.setId(database.getTableLatestId(className));
         user.setName(name);
         user.setPhoneNumber(phoneNumber);
         user.setEmail(email);
         user.setPassword(password);
 
-        return saveRegisteredUser(user) && saveLoggedInUser(user.getId());
+        user.write();
+        saveLoggedInUser(user.getId());
+
+//        return saveRegisteredUser(user) && saveLoggedInUser(user.getId());
     }
 
     // ====================== Book a Car ======================
@@ -114,6 +118,7 @@ public class UserService {
     // ====================== Getters ======================
     public User fetchUserById(int id) {
         // ToDo: Check to see if the returned User is null or not at the method call
+        System.out.println(Directory.TableDirectory + classPath + id);
         return userStream.reader(Directory.TableDirectory + classPath + id);
     }
 
@@ -121,7 +126,8 @@ public class UserService {
         // ToDo (Done): Fetch user from loggedInUser.txt file
         // ToDo: Check to see if the returned User is null or not at the method call
         try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(Directory.DatabaseDirectory + "LoggedInUserId"))) {
-            return fetchUserById(dataInputStream.readInt());
+            User user = new User();
+            return user.read(dataInputStream.readInt());
         } catch (IOException e) {
             return null;
         }
@@ -140,8 +146,8 @@ public class UserService {
         try {
             Files.walk(Paths.get(Directory.TableDirectory + classPath), Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS)
                     .filter(Files::isRegularFile)
-                    .forEach(path -> users.add(userStream.reader(path.toString())));
-        } catch (IOException e) {
+                    .forEach(path -> userStream.reader(path.toString()));
+        } catch (Throwable e) {
             operationSuccessful = false;
         }
         // ToDo: Utilize this return value at the method call
@@ -164,8 +170,6 @@ public class UserService {
     private boolean saveRegisteredUser(User user) {
         // ToDo (Done): Add registered user to registeredUsers.txt file
         // ToDo (Done): Write registered user into loggedInUser.txt file
-        database.incrementSize(className);
-        saveLoggedInUser(user.getId());
         // ToDo: Utilize this return value at the method call
         return userStream.writer(user, Directory.TableDirectory + classPath + user.getId());
     }

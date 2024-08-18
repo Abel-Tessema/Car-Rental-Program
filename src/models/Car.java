@@ -1,15 +1,21 @@
 package models;
 
+import file_manager.SchemaId;
 import file_manager.Stream;
 import utility.Directory;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Car implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private final Stream<Car> stream = new Stream<>();
     private final String className = "Car";
     private final String classPath = className + "/";
     // ====================== Fields ======================
@@ -70,60 +76,70 @@ public class Car implements Serializable {
     }
 
     // ====================== Setters ======================
-    public boolean setId(int id) {
+    public void setId(int id) {
         this.id = id;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
-
     }
 
-    public boolean setBrand(String brand) {
+    public void setBrand(String brand) {
         this.brand = brand;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setModel(String model) {
+    public void setModel(String model) {
         this.model = model;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setType(String type) {
+    public void setType(String type) {
         this.type = type;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setColor(String color) {
+    public void setColor(String color) {
         this.color = color;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setYear(int year) {
+    public void setYear(int year) {
         this.year = year;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setQuantityAvailable(int quantityAvailable) {
+    public void setQuantityAvailable(int quantityAvailable) {
         this.quantityAvailable = quantityAvailable;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
     }
 
-    public boolean setBaseRate(double baseRate) {
+    public void setBaseRate(double baseRate) {
         this.baseRate = baseRate;
-        // ToDo (Done): Write updated field to file
-        // ToDo: Utilize this return value at the method call
-        return stream.writer(this, Directory.TableDirectory + classPath + id);
+    }
+
+    public void write() {
+        SchemaId database = new SchemaId();
+        database.incrementSize(className);
+        id = database.getTableLatestId(className);
+
+        Stream<Car> stream = new Stream<>();
+        stream.writer(this, Directory.TableDirectory + classPath + id);
+    }
+
+    public void delete() {
+        SchemaId database = new SchemaId();
+        database.decrementSize(className);
+
+        Stream<Car> stream = new Stream<>();
+        stream.deleter(Directory.TableDirectory + classPath + id);
+    }
+
+    public static Car read(String filePath) {
+        Stream<Car> stream = new Stream<>();
+        return stream.reader(filePath);
+    }
+
+    public List<Car> readAll() {
+        List<Car> list = new ArrayList<>();
+
+        try {
+            Files.walk(Paths.get(Directory.TableDirectory + classPath), Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS)
+                    .filter(Files::isRegularFile)
+                    .forEach(path -> list.add(read(path.toString())));
+        } catch (IOException e) {
+            return null;
+        }
+        return list;
     }
 }

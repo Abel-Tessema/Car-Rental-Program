@@ -6,8 +6,7 @@ import file_manager.errorMessage.ERROR;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchemaId
-{
+public class SchemaId {
     private final HashMap<String, Map<String, Integer>> tables;
     private final DirectoryManager directoryManager = new DirectoryManager();
     private final Stream<HashMap<String, Map<String, Integer>>> stream = new Stream<>();

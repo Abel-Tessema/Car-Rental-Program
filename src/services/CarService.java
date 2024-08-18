@@ -213,6 +213,8 @@ public class CarService {
 
     public boolean addCar(String brand, String model, String type, String color, int year, int quantityAvailable, double baseRate) {
         Car car = new Car();
+        database.incrementSize(className);
+
         car.setId(database.getTableLatestId(className));
         car.setBrand(brand);
         car.setModel(model);
@@ -222,7 +224,6 @@ public class CarService {
         car.setQuantityAvailable(quantityAvailable);
         car.setBaseRate(baseRate);
         // ToDo (Done): Auto-generate id for the car, and write the car into file
-        database.incrementSize(className);
         // ToDo: Utilize this return value at the method call
         return stream.writer(car, Directory.TableDirectory + classPath + car.getId());
     }

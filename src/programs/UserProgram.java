@@ -6,6 +6,7 @@ import services.UserService;
 
 public abstract class UserProgram {
     public static void main(String[] args) {
+        
         UserScreenManager manager = new UserScreenManagerImplementer();
         /*
         ToDo: Read loggedInUser.txt, and

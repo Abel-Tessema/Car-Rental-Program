@@ -1,5 +1,6 @@
 package file_manager;
 
+import services.CarService;
 import services.UserService;
 
 import java.io.File;
@@ -37,6 +38,10 @@ public class RUN
         Database.resetDatabase();
 //        UserService userService = new UserService();
 //        System.out.println(userService.getLoggedInUser());
+//        CarService carService = new CarService();
+//        carService.addCar("a", "b", "c", "d", 2000, 5, 500);
+
+
 
         Database.display();
     }

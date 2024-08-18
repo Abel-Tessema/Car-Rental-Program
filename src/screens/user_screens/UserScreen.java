@@ -1,5 +1,6 @@
 package screens.user_screens;
 
+import models.User;
 import screen_managers.UserScreenManager;
 import screen_managers.UserScreenManagerImplementer;
 import services.UserService;

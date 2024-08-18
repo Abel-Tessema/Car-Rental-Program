@@ -18,9 +18,6 @@ class Foo implements Serializable
     private int m_roll;
     private String m_data;
     private double m_size;
-    private static final String myName = "Foo";
-    private static final String myPath = myName + "/";
-
     public Foo(String data, double size)
     {
         m_data = data;
@@ -53,6 +50,9 @@ class Foo implements Serializable
         System.out.printf("%-10d%-10s%-10f\n", m_roll, m_data, m_size);
         System.out.printf(String.valueOf("*").repeat(40) + "\n");
     }
+
+    private static final String myName = "Foo";
+    private static final String myPath = myName + "/";
 
     public void write()
     {
